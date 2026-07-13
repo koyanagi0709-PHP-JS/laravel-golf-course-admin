@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('golf_courses', function (Blueprint $table) {
-            $table->softDeletes();
+            $table->softDeletes(); // deletedat カラムを追加
         });
     }
 
