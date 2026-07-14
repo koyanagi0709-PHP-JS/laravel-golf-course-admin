@@ -55,6 +55,7 @@ Route::prefix('golf-courses')->name('golf-courses.')->group(function () {
         // 削除済みデータ（ゴミ箱）の管理
         Route::get('/trashed', [GolfCourseController::class, 'trashed'])->name('trashed');         // 削除済みデータ一覧
         Route::post('/{id}/restore', [GolfCourseController::class, 'restore'])->name('restore')->whereNumber('id'); // 削除データの復元処理
+        Route::delete('/{id}/force', [GolfCourseController::class, 'forceDelete'])->name('force-delete')->whereNumber('id'); // 完全削除処理
 
         // 編集・更新関連
         Route::get('/{id}/edit', [GolfCourseController::class, 'edit'])->name('edit')->whereNumber('id'); // 編集画面表示
