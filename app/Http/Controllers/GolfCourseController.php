@@ -6,6 +6,7 @@ use App\Models\GolfCourse;
 use App\Http\Requests\IndexGolfCourseRequest;
 use App\Http\Requests\StoreGolfCourseRequest;
 use App\Http\Requests\UpdateGolfCourseRequest;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * ゴルフ場管理コントローラー
@@ -53,6 +54,20 @@ class GolfCourseController extends Controller
         // 厳格にバリデーションされた入力値のみを取り出します
         $validated = $request->validated();
 
+        // -------------------------------------------------------------
+        // 画像アップロード処理
+        // 各画像（image1, image2, image3）がアップロードされているか確認し、
+        // 公開ディスク（publicディスク）の 'golf_courses' ディレクトリ内に保存します。
+        // 保存後、データベースに登録するためのファイルパスを配列に設定します。
+        // -------------------------------------------------------------
+        foreach (['image1', 'image2', 'image3'] as $imageKey) {
+            if ($request->hasFile($imageKey)) {
+                // ファイルを保存し、その相対パス（例: "golf_courses/xxxxxx.jpg"）を取得します
+                $path = $request->file($imageKey)->store('golf_courses', 'public');
+                $validated[$imageKey] = $path;
+            }
+        }
+
         // ゴルフ場レコードを新規作成します
         $golfCourse = GolfCourse::create($validated);
 
@@ -99,6 +114,24 @@ class GolfCourseController extends Controller
         
         // 厳格にバリデーションされた更新用の入力値のみを取り出します
         $validated = $request->validated();
+
+        // -------------------------------------------------------------
+        // 画像アップロード・差し替え処理
+        // 新しい画像ファイルがアップロードされた場合、既存の古い画像があれば
+        // ストレージから物理的に削除した上で、新しい画像を保存しパスを更新します。
+        // -------------------------------------------------------------
+        foreach (['image1', 'image2', 'image3'] as $imageKey) {
+            if ($request->hasFile($imageKey)) {
+                // 古い画像が存在すれば物理削除する
+                if ($golfCourse->$imageKey) {
+                    Storage::disk('public')->delete($golfCourse->$imageKey);
+                }
+                
+                // 新しい画像を保存しパスを格納する
+                $path = $request->file($imageKey)->store('golf_courses', 'public');
+                $validated[$imageKey] = $path;
+            }
+        }
 
         // 取得したゴルフ場モデルに値を詰め込んでデータベースに保存します
         $golfCourse->fill($validated);
@@ -164,5 +197,35 @@ class GolfCourseController extends Controller
         return redirect()
             ->route('golf-courses.index')
             ->with('success', 'ゴルフ場を復元しました。');
+    }
+
+    /**
+     * 論理削除されたゴルフ場を完全に物理削除します（完全削除）。
+     * 
+     * @param int $id ゴルフ場ID
+     */
+    public function forceDelete($id)
+    {
+        // 論理削除されたデータも含めて対象レコードを取得します
+        $golfCourse = GolfCourse::withTrashed()->findOrFail($id);
+
+        // -------------------------------------------------------------
+        // 画像ファイルの物理削除
+        // データベースからレコードを物理削除する前に、
+        // 紐づいているすべてのアップロード画像もストレージから削除します。
+        // -------------------------------------------------------------
+        foreach (['image1', 'image2', 'image3'] as $imageKey) {
+            if ($golfCourse->$imageKey) {
+                Storage::disk('public')->delete($golfCourse->$imageKey);
+            }
+        }
+
+        // データベースから物理削除を実行します
+        $golfCourse->forceDelete();
+
+        // ゴミ箱画面へリダイレクトし、完了メッセージをセッションに格納します
+        return redirect()
+            ->route('golf-courses.trashed')
+            ->with('success', 'ゴルフ場データを完全に物理削除しました。');
     }
 }
