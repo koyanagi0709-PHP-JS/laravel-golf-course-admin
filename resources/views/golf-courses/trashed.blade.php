@@ -8,13 +8,19 @@
         </a>
     </div>
 
+    @if (session('success'))
+        <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-800 rounded-lg shadow-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-20">ID</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">施設名</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-32">操作</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-48">操作</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -22,11 +28,25 @@
                     <tr class="hover:bg-gray-50 transition duration-150">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $golfCourse->id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $golfCourse->course_name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <form action="{{ route('golf-courses.restore', ['id' => $golfCourse->id]) }}" method="POST">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-4">
+                            <!-- 復元処理用フォーム -->
+                            <form action="{{ route('golf-courses.restore', ['id' => $golfCourse->id]) }}" method="POST" class="inline">
                                 @csrf
-                                <button type="submit" class="text-green-600 hover:text-green-900 font-semibold transition duration-150">
+                                <button type="submit" class="text-green-600 hover:text-green-900 font-semibold transition duration-150 cursor-pointer">
                                     復元
+                                </button>
+                            </form>
+
+                            <!-- 
+                                【完全物理削除用フォーム】
+                                ソフトデリート（論理削除）されたデータをデータベースから完全に消去（物理削除）します。
+                                誤操作防止のため、JavaScriptで確認ダイアログを表示してからリクエストを送信します。
+                            -->
+                            <form action="{{ route('golf-courses.force-delete', ['id' => $golfCourse->id]) }}" method="POST" onsubmit="return confirm('このゴルフ場データを完全に物理削除しますか？登録されている写真ファイルもすべて削除され、元に戻せなくなります。');" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900 font-semibold transition duration-150 cursor-pointer">
+                                    完全に削除
                                 </button>
                             </form>
                         </td>
