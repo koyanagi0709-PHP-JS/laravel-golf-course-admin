@@ -19,6 +19,29 @@
                         ゴルフ場管理システム
                     </a>
                 </h1>
+                
+                <div>
+                    @auth
+                        <!-- 
+                            【ログアウトフォームの安全性とCSRF対策】
+                            ログアウト処理は、セキュリティ対策（不正なログアウトやクロスサイトリクエストフォージェリ攻撃の防止）のため、
+                            GETではなくPOSTリクエストを送信する必要があります。そのため、ここでは @csrf トークンを含めた
+                            インラインフォームを使用し、サブミットボタンを「ログアウト」ボタンとして配置しています。
+                        -->
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow text-sm transition duration-150 cursor-pointer">
+                                ログアウト
+                            </button>
+                        </form>
+                    @endauth
+                    
+                    @guest
+                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow text-sm transition duration-150">
+                            ログイン
+                        </a>
+                    @endguest
+                </div>
             </div>
         </header>
 
