@@ -18,55 +18,134 @@
         </div>
     @endif
 
-    <form action="{{ route('golf-courses.update', ['id' => $golfCourse->id]) }}" method="POST" class="space-y-6 max-w-2xl bg-gray-50 p-6 rounded-lg border border-gray-200">
+    <!-- 
+        【enctype="multipart/form-data" の重要性】
+        写真ファイルなどのアップロードを行うフォームには、この属性の記述が必須です。
+        記述がない場合、ファイルデータが正しくサーバーへ送信されません。
+    -->
+    <form action="{{ route('golf-courses.update', ['id' => $golfCourse->id]) }}" method="POST" enctype="multipart/form-data" class="space-y-6 max-w-2xl bg-gray-50 p-6 rounded-lg border border-gray-200">
         @csrf
         @method('PUT')
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 各項目名はマイグレーションのコメント(論理名)に合わせて統一・整形しています -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">locale</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ロケール (ja/en等)</label>
                 <input type="text" name="locale" value="{{ old('locale', $golfCourse->locale) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">country_code</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">国コード (JP/US等)</label>
                 <input type="text" name="country_code" value="{{ old('country_code', $golfCourse->country_code) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">state_prefecture</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">都道府県・州名</label>
                 <input type="text" name="state_prefecture" value="{{ old('state_prefecture', $golfCourse->state_prefecture) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">course_name <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">施設名（コース名） <span class="text-red-500">*</span></label>
                 <input type="text" name="course_name" value="{{ old('course_name', $golfCourse->course_name) }}" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">web</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">分類コード</label>
+                <input type="number" name="kinds" value="{{ old('kinds', $golfCourse->kinds) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">公式サイトURL</label>
                 <input type="url" name="web" value="{{ old('web', $golfCourse->web) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">phone</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">代表電話番号</label>
                 <input type="text" name="phone" value="{{ old('phone', $golfCourse->phone) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">address</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">住所</label>
                 <input type="text" name="address" value="{{ old('address', $golfCourse->address) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">form_email</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">問い合わせメールアドレス</label>
                 <input type="email" name="form_email" value="{{ old('form_email', $golfCourse->form_email) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">reservation</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">予約先URL／番号</label>
                 <input type="text" name="reservation" value="{{ old('reservation', $golfCourse->reservation) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">reservation_method</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">予約手段（電話/WEB/メール等）</label>
                 <input type="text" name="reservation_method" value="{{ old('reservation_method', $golfCourse->reservation_method) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
+            </div>
+            <div>
+                <!-- 余白合わせ用のダミー要素 -->
+            </div>
+
+            <!-- 
+                【種別フラグ (チェックボックス)】
+                チェックボックスが未チェックの場合、ブラウザからは値が送信されません。
+                これを防ぐために、同名の hidden フィールド (value="0") をあらかじめ配置し、
+                未チェック時に "0" (false)、チェック時に "1" (true) が送信されるようにしています。
+            -->
+            <div class="col-span-1 md:col-span-2">
+                <span class="block text-sm font-medium text-gray-700 mb-2 border-b pb-1">コース種別</span>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="hidden" name="indoor" value="0">
+                        <input type="checkbox" name="indoor" value="1" {{ old('indoor', $golfCourse->indoor) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">室内コースか</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="hidden" name="outdoor" value="0">
+                        <input type="checkbox" name="outdoor" value="1" {{ old('outdoor', $golfCourse->outdoor) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">屋外コースか</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="hidden" name="short_course" value="0">
+                        <input type="checkbox" name="short_course" value="1" {{ old('short_course', $golfCourse->short_course) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">ショートコースを持つか</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="hidden" name="long_course" value="0">
+                        <input type="checkbox" name="long_course" value="1" {{ old('long_course', $golfCourse->long_course) ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">ロングコースを持つか</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 位置情報 (緯度・経度) -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">緯度 (-90.0〜90.0)</label>
+                <input type="number" step="any" name="lat" value="{{ old('lat', $golfCourse->lat) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">経度 (-180.0〜180.0)</label>
+                <input type="number" step="any" name="lng" value="{{ old('lng', $golfCourse->lng) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
+            </div>
+
+            <!-- 画像アップロードと既存の画像プレビュー -->
+            <div class="col-span-1 md:col-span-2 space-y-4">
+                <span class="block text-sm font-medium text-gray-700 border-b pb-2">ゴルフ場写真（最大3枚、アップロードすると上書きされます）</span>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @foreach (['image1', 'image2', 'image3'] as $idx => $imageKey)
+                        <div class="space-y-2">
+                            <label class="block text-xs text-gray-500">画像{{ $idx+1 }}ファイルパス</label>
+                            
+                            @if ($golfCourse->$imageKey)
+                                <div class="relative w-full h-32 bg-gray-200 rounded-md overflow-hidden border border-gray-300 mb-2">
+                                    <img src="{{ asset('storage/' . $golfCourse->$imageKey) }}" class="object-cover w-full h-full" alt="登録済み画像{{ $idx+1 }}">
+                                </div>
+                            @else
+                                <div class="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center border border-dashed border-gray-300 mb-2">
+                                    <span class="text-xs text-gray-400">画像未登録</span>
+                                </div>
+                            @endif
+                            
+                            <input type="file" name="{{ $imageKey }}" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">remarks</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">備考</label>
             <textarea name="remarks" rows="4" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">{{ old('remarks', $golfCourse->remarks) }}</textarea>
         </div>
 
