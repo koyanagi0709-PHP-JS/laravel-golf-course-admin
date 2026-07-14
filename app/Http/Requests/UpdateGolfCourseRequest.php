@@ -41,9 +41,9 @@ class UpdateGolfCourseRequest extends FormRequest
             'reservation' => ['nullable', 'string', 'max:255'],
             'reservation_method' => ['nullable', 'string', 'max:255'],
             'remarks' => ['nullable', 'string'],
-            'image1' => ['nullable', 'string', 'max:255'],
-            'image2' => ['nullable', 'string', 'max:255'],
-            'image3' => ['nullable', 'string', 'max:255'],
+            'image1' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'image2' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'image3' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 }
