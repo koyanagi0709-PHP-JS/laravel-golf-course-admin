@@ -1,59 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ⛳ ゴルフ場管理システム (Golf Course Admin)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📖 1. プロジェクト概要 (Project Overview)
 
-## About Laravel
+本システムは、全国のゴルフ場情報（数千件規模）を管理・運用するための**管理者専用マスタメンテナンスWebアプリケーション**です。
+既存のデータベース設計（DDL）を読み解き、Laravelを用いて安全かつ効率的にデータの検索・登録・更新・論理削除・完全削除を行えるように構築されています。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠 2. 使用した技術 (Technologies)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### バックエンド (Backend)
 
-## Learning Laravel
+- **Laravel Framework**: `^12.0`
+- **データベース**: MySQL 8.x (既存マスタを想定)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### フロントエンド (Frontend)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **テンプレートエンジン**: Blade
+- **CSSフレームワーク**: Tailwind CSS `^4.0.0`
+- **ビルドツール**: Vite `^7.0.7` (laravel-vite-plugin `^2.0.0`)
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## ✨ 3. 主な機能 (Features)
 
-### Premium Partners
+- 🔐 **セキュアな管理者認証**
+    - セッション固定攻撃対策、CSRF対策を備えたセキュアなログイン/ログアウト機能。
+- 📝 **ゴルフ場データの高度なCRUD操作**
+    - ページネーション（20件/ページ）に対応した一覧表示。
+    - フリーワード、都道府県、言語コード、各種コースフラグ（屋内/屋外/ショート/ロング）による**複数条件の絞り込み検索**。
+    - 安全な論理削除（SoftDeletes）と、削除済みデータ一覧からの**復元 / 物理削除**。
+- 🖼 **画像ファイルの管理**
+    - 各施設につき最大3枚の画像アップロード。
+    - 画像の差し替え時や物理削除時に、ストレージから古い画像を自動削除するクリーンなファイル管理。
+    - 編集画面からの「個別画像削除」機能。
+- 📊 **【追加機能】CSVダウンロード（ストリーム出力）**
+    - 現在の検索条件を維持したまま、絞り込まれたデータをCSV形式でダウンロード。
+    - 大量データに対応するストリーム処理（`streamDownload`）と、Excelの文字化けを防ぐ**BOM付加**を実装。
+- 🗺 **【追加機能】Google Maps 動的埋め込み表示**
+    - 登録された緯度・経度 (`lat`/`lng`) を利用して、詳細画面にGoogle Mapsのコンパクトな地図を自動生成（`output=embed` 利用）。
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🖥 4. 画面構成 (Screens)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+本アプリケーションには一般公開画面はなく、**全画面が管理者のみアクセス可能（ログイン必須）**です。
 
-## Code of Conduct
+| 画面名                   | 役割・機能                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **ログイン画面**         | メールアドレスとパスワードによる認証。スッキリとしたカード型デザイン。                                           |
+| **一覧画面**             | 登録されているゴルフ場を一覧表示。4つの条件で絞り込み検索ができ、そのままCSVダウンロードが可能。                 |
+| **詳細画面**             | 選択したゴルフ場の全項目を表示。画像ギャラリー（最大3枚）やGoogle Mapsの埋め込み地図を配置。                     |
+| **新規登録・編集画面**   | データベースのスキーマに完全に準拠したバリデーション（緯度経度の範囲チェック等）を備えた入力フォーム。           |
+| **削除確認画面**         | 誤操作を防ぐための論理削除の最終確認画面。                                                                       |
+| **ゴミ箱（削除済）一覧** | 論理削除されたデータの一覧。元の状態への「復元」と、DBおよび画像ファイルを完全に消去する「完全物理削除」を実行。 |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 💡 5. 工夫した点 (Points of Effort)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **厳格なバリデーションと柔軟性の両立**
+    - 緯度経度の入力制限において、DBの型定義に合わせた範囲設定（`-999.999999 〜 999.999999`）を行い、エラーで落ちない堅牢な設計にしました。
+    - 万が一の入力エラー時も、専用の日本語エラーメッセージ（フォールバック）を用意し、管理者の操作性を高めています。
+- **UI/UXの向上**
+    - Tailwind CSSを活用し、チェックボックスではなく視認性の高い「バッジ表示」でフラグ情報を表現。
+    - 入力フォームにはプレースホルダー（入力例）を付与し、迷わず入力できる工夫を凝らしました。
+- **大量データへの対応とメモリ最適化**
+    - 何千件ものデータエクスポートに対応するため、CSVダウンロード時に `fputcsv` を用いたストリーム出力を採用。サーバーのメモリ枯渇を防ぐプロフェッショナルな実装です。
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🚀 6. 環境構築手順 (Setup Instructions)
+
+ローカル環境でこのプロジェクトを動かすための手順です。
+
+### 1. リポジトリのクローンと依存関係のインストール
+
+```bash
+git clone https://github.com/koyanagi0709-PHP-JS/laravel-golf-course-admin.git
+cd laravel-golf-course-admin
+composer install
+npm install
+```
+
+### 2. 環境変数の設定
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+`.env` ファイルを開き、データベース接続情報（ローカル環境に合わせてMySQLやSQLite）を設定してください。
+
+### 3. ストレージリンクの作成（重要）
+
+アップロードされた画像を表示するために必須です。
+
+```bash
+php artisan storage:link
+```
+
+### 4. マイグレーションとテストデータの投入
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+※これにより、管理者用のアカウント（`admin@example.com` / `password123` 等）と、ダミーのゴルフ場データ30件が生成されます。
+
+### 5. アセットのビルドとサーバーの起動
+
+```bash
+# 別々のターミナルで実行するか、バックグラウンドで実行してください
+npm run build
+php artisan serve
+```
+
+ブラウザで `http://localhost:8000` にアクセスし、生成された管理者アカウントでログインしてください。
