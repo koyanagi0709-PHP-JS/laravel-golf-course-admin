@@ -131,6 +131,11 @@
                                 <div class="relative w-full h-32 bg-gray-200 rounded-md overflow-hidden border border-gray-300 mb-2">
                                     <img src="{{ asset('storage/' . $golfCourse->$imageKey) }}" class="object-cover w-full h-full" alt="登録済み画像{{ $idx+1 }}">
                                 </div>
+                                <label class="inline-flex items-center cursor-pointer mb-2">
+                                    <input type="hidden" name="delete_{{ $imageKey }}" value="0">
+                                    <input type="checkbox" name="delete_{{ $imageKey }}" value="1" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                    <span class="ml-2 text-xs text-red-600">現在の画像を削除する</span>
+                                </label>
                             @else
                                 <div class="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center border border-dashed border-gray-300 mb-2">
                                     <span class="text-xs text-gray-400">画像未登録</span>

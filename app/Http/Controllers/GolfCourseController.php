@@ -116,11 +116,20 @@ class GolfCourseController extends Controller
         $validated = $request->validated();
 
         // -------------------------------------------------------------
-        // 画像アップロード・差し替え処理
+        // 画像アップロード・差し替え処理・個別削除処理
         // 新しい画像ファイルがアップロードされた場合、既存の古い画像があれば
         // ストレージから物理的に削除した上で、新しい画像を保存しパスを更新します。
+        // 個別削除チェックがONの場合は、古い画像を物理削除してパスをnull化します。
         // -------------------------------------------------------------
         foreach (['image1', 'image2', 'image3'] as $imageKey) {
+            // 個別削除フラグがONで、既存画像がある場合
+            $deleteKey = 'delete_' . $imageKey;
+            if ($request->boolean($deleteKey) && $golfCourse->$imageKey) {
+                Storage::disk('public')->delete($golfCourse->$imageKey);
+                $validated[$imageKey] = null;
+                $golfCourse->$imageKey = null; // $validatedに上書きされないようにモデルにも反映（後のfillのため）
+            }
+
             if ($request->hasFile($imageKey)) {
                 // 古い画像が存在すれば物理削除する
                 if ($golfCourse->$imageKey) {
@@ -177,7 +186,7 @@ class GolfCourseController extends Controller
     public function trashed()
     {
         // 論理削除されたレコードのみを最新順で取得します
-        $golfCourses = GolfCourse::onlyTrashed()->latest()->get();
+        $golfCourses = GolfCourse::onlyTrashed()->latest()->paginate(20);
 
         return view('golf-courses.trashed', compact('golfCourses'));
     }

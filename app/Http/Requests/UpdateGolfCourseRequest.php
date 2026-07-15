@@ -35,8 +35,8 @@ class UpdateGolfCourseRequest extends FormRequest
             'outdoor' => ['nullable', 'boolean'],
             'short_course' => ['nullable', 'boolean'],
             'long_course' => ['nullable', 'boolean'],
-            'lat' => ['nullable', 'numeric'],
-            'lng' => ['nullable', 'numeric'],
+            'lat' => ['nullable', 'numeric', 'min:-90', 'max:90'],
+            'lng' => ['nullable', 'numeric', 'min:-180', 'max:180'],
             'form_email' => ['nullable', 'email', 'max:255'],
             'reservation' => ['nullable', 'string', 'max:255'],
             'reservation_method' => ['nullable', 'string', 'max:255'],
@@ -44,6 +44,9 @@ class UpdateGolfCourseRequest extends FormRequest
             'image1' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'image2' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'image3' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'delete_image1' => ['nullable', 'boolean'],
+            'delete_image2' => ['nullable', 'boolean'],
+            'delete_image3' => ['nullable', 'boolean'],
         ];
     }
 }
