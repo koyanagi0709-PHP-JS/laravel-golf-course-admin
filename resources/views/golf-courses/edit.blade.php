@@ -111,11 +111,15 @@
 
             <!-- 位置情報 (緯度・経度) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">緯度 (-90.0〜90.0)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    緯度 <span class="text-sm text-gray-500 font-normal">（例: 35.681236）</span>
+                </label>
                 <input type="number" step="any" name="lat" value="{{ old('lat', $golfCourse->lat) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">経度 (-180.0〜180.0)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    経度 <span class="text-sm text-gray-500 font-normal">（例: 139.767125）</span>
+                </label>
                 <input type="number" step="any" name="lng" value="{{ old('lng', $golfCourse->lng) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
 
