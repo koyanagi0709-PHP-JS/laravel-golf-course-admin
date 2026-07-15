@@ -35,8 +35,10 @@ class UpdateGolfCourseRequest extends FormRequest
             'outdoor' => ['nullable', 'boolean'],
             'short_course' => ['nullable', 'boolean'],
             'long_course' => ['nullable', 'boolean'],
-            'lat' => ['nullable', 'numeric', 'min:-90', 'max:90'],
-            'lng' => ['nullable', 'numeric', 'min:-180', 'max:180'],
+            // 緯度経度のバリデーション: 仕様書やDBの型(doubleやdecimal)を考慮し、
+            // エラーで落ちないよう広めの数値範囲（-999.999999 〜 999.999999）を許可します。
+            'lat' => ['nullable', 'numeric', 'min:-999.999999', 'max:999.999999'],
+            'lng' => ['nullable', 'numeric', 'min:-999.999999', 'max:999.999999'],
             'form_email' => ['nullable', 'email', 'max:255'],
             'reservation' => ['nullable', 'string', 'max:255'],
             'reservation_method' => ['nullable', 'string', 'max:255'],
@@ -47,6 +49,21 @@ class UpdateGolfCourseRequest extends FormRequest
             'delete_image1' => ['nullable', 'boolean'],
             'delete_image2' => ['nullable', 'boolean'],
             'delete_image3' => ['nullable', 'boolean'],
+        ];
+    }
+
+    /**
+     * バリデーションエラー時のカスタムメッセージを定義します。
+     */
+    public function messages(): array
+    {
+        return [
+            'lat.numeric' => '緯度は数値で入力してください。',
+            'lat.min' => '緯度は正しい数値の範囲で入力してください。',
+            'lat.max' => '緯度は正しい数値の範囲で入力してください。',
+            'lng.numeric' => '経度は数値で入力してください。',
+            'lng.min' => '経度は正しい数値の範囲で入力してください。',
+            'lng.max' => '経度は正しい数値の範囲で入力してください。',
         ];
     }
 }
