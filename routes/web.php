@@ -44,8 +44,10 @@ Route::prefix('golf-courses')->name('golf-courses.')->group(function () {
     // 【管理者専用ルート】ログインしている場合のみ操作・アクセスが許可される画面
     // -------------------------------------------------------------
     Route::middleware('auth')->group(function () {
-        // 一覧・詳細
+        // 一覧・CSVダウンロード・詳細
         Route::get('/', [GolfCourseController::class, 'index'])->name('index');                         // ゴルフ場一覧画面
+        Route::get('/export', [GolfCourseController::class, 'export'])->name('export');                 // CSVダウンロード
+
         Route::get('/{id}', [GolfCourseController::class, 'show'])->name('show')->whereNumber('id');    // ゴルフ場詳細画面
 
         // 新規登録関連
