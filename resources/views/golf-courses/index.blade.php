@@ -22,15 +22,15 @@
     <form method="GET" action="{{ route('golf-courses.index') }}" class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">キーワード</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">フリーワード（施設名・住所）</label>
                 <input type="text" name="q" value="{{ request('q') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">都道府県</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">都道府県・州</label>
                 <input type="text" name="prefecture" value="{{ request('prefecture') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">locale</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">言語コード</label>
                 <select name="locale" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white px-3 py-2 border">
                     <option value="">選択してください</option>
                     <option value="ja" {{ request('locale') === 'ja' ? 'selected' : '' }}>ja</option>
@@ -63,11 +63,11 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">施設名</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">都道府県</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">locale</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">施設名（コース名）</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">都道府県・州名</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">言語コード</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">種別</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">電話</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">代表電話番号</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">操作</th>
                 </tr>
             </thead>
