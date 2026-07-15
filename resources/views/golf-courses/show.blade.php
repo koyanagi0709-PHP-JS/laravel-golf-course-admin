@@ -131,8 +131,34 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 px-6 py-4">
                 <dt class="text-sm font-semibold text-gray-500">位置情報</dt>
                 <dd class="text-sm text-gray-900 sm:col-span-2">
-                    <span class="font-medium text-gray-500 mr-2">緯度:</span> {{ $golfCourse->lat ?? '未設定' }}
-                    <span class="font-medium text-gray-500 ml-4 mr-2">経度:</span> {{ $golfCourse->lng ?? '未設定' }}
+                    <div class="mb-4">
+                        <span class="font-medium text-gray-500 mr-2">緯度:</span> {{ $golfCourse->lat ?? '未設定' }}
+                        <span class="font-medium text-gray-500 ml-4 mr-2">経度:</span> {{ $golfCourse->lng ?? '未設定' }}
+                    </div>
+
+                    <!-- 
+                        【Google Maps の埋め込み表示】
+                        URLパラメータに output=embed を付与することで、Google Mapsのサイト全体ではなく、
+                        Webページへの埋め込みに最適化されたコンパクトなUI（地図部分のみ）で表示させることができます。
+                        APIキーが不要な標準のURL形式を採用しています。
+                    -->
+                    @if($golfCourse->lat && $golfCourse->lng)
+                        <div class="w-full h-64 rounded-lg shadow-sm overflow-hidden border border-gray-200">
+                            <iframe 
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0" 
+                                scrolling="no" 
+                                marginheight="0" 
+                                marginwidth="0" 
+                                src="https://maps.google.com/maps?q={{ $golfCourse->lat }},{{ $golfCourse->lng }}&t=&z=15&ie=UTF8&iwloc=&output=embed">
+                            </iframe>
+                        </div>
+                    @else
+                        <div class="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center border border-dashed border-gray-300">
+                            <span class="text-sm text-gray-400">地図情報が登録されていません</span>
+                        </div>
+                    @endif
                 </dd>
             </div>
 
