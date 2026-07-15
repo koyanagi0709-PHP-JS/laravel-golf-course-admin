@@ -49,8 +49,15 @@
             </div>
         </div>
         <div class="mt-4 flex justify-end space-x-2">
+            <!-- 
+                formaction 属性を指定することで、1つのフォーム内で異なる送信先（ルート）にリクエストを送ることができます。
+                ここでは、通常の検索は index ルートへ、CSVダウンロードは export ルートへ送信します。
+            -->
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded transition duration-150">
                 検索
+            </button>
+            <button type="submit" formaction="{{ route('golf-courses.export') }}" formmethod="GET" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded transition duration-150">
+                CSVダウンロード
             </button>
             <a href="{{ route('golf-courses.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-6 rounded transition duration-150">
                 クリア
