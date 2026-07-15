@@ -37,6 +37,82 @@ class GolfCourseController extends Controller
     }
 
     /**
+     * 現在の検索条件に一致するゴルフ場の一覧をCSVとしてダウンロードします。
+     * 
+     * @param IndexGolfCourseRequest $request 検索条件バリデーション済リクエスト
+     */
+    public function export(IndexGolfCourseRequest $request)
+    {
+        $validated = $request->validated();
+
+        // ページネーションを使わず、条件に一致する全件を取得します
+        $golfCourses = GolfCourse::query()
+            ->search($validated)
+            ->orderByDesc('id')
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="golf_courses_' . date('Ymd_His') . '.csv"',
+        ];
+
+        // -------------------------------------------------------------
+        // CSVストリーム出力処理
+        // 大量のデータを一括でメモリに読み込むのを防ぐため、
+        // streamDownload を使用して1行ずつ出力バッファに書き込みます。
+        // また、Excel等で文字化けしないよう、先頭にBOM (\xEF\xBB\xBF) を出力します。
+        // -------------------------------------------------------------
+        $callback = function () use ($golfCourses) {
+            $file = fopen('php://output', 'w');
+
+            // BOM (Byte Order Mark) を書き込み（Excelでの文字化け対策）
+            fwrite($file, "\xEF\xBB\xBF");
+
+            // CSVのヘッダー行を定義
+            fputcsv($file, [
+                'ID',
+                '施設名',
+                '都道府県',
+                '言語コード',
+                '国コード',
+                '屋内コース',
+                '屋外コース',
+                'ショートコース',
+                'ロングコース',
+                '緯度',
+                '経度',
+                '公式サイトURL',
+                '代表電話番号',
+                '住所',
+            ]);
+
+            // データ行を1件ずつ書き込み
+            foreach ($golfCourses as $gc) {
+                fputcsv($file, [
+                    $gc->id,
+                    $gc->course_name,
+                    $gc->state_prefecture,
+                    $gc->locale,
+                    $gc->country_code,
+                    $gc->indoor ? 'あり' : 'なし',
+                    $gc->outdoor ? 'あり' : 'なし',
+                    $gc->short_course ? 'あり' : 'なし',
+                    $gc->long_course ? 'あり' : 'なし',
+                    $gc->lat,
+                    $gc->lng,
+                    $gc->web,
+                    $gc->phone,
+                    $gc->address,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, 'golf_courses.csv', $headers);
+    }
+
+    /**
      * ゴルフ場の新規登録フォームを表示します。
      */
     public function create()
